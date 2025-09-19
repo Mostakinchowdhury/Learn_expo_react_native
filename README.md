@@ -292,3 +292,108 @@ const styles = StyleSheet.create({
 - StyleSheet: CSS না, বরং JS object; camelCase property নাম, units ছাড়া সংখ্যা।
 
 ---
+
+# **Day 3: Flexbox layout system (row, column, justifyContent, alignItems) Dimensions, Platform API**
+
+## 🔹 Flexbox Layout System
+
+👉 React Native এর layout system **Flexbox** ভিত্তিক (CSS এর মতো কিন্তু কিছু পার্থক্য আছে)
+
+### 1. flexDirection
+
+- নির্ধারণ করে children **কোন দিক** এ সাজানো হবে।
+
+  - `row` → বামে থেকে ডানে (horizontal)
+  - `column` → উপরে থেকে নিচে (default)
+
+```tsx
+<View style={{ flexDirection: 'row' }}>
+  <Text>A</Text>
+  <Text>B</Text>
+</View>
+```
+
+---
+
+### 2. justifyContent
+
+👉 মূল (Main Axis) বরাবর children কিভাবে সাজানো হবে।
+
+- `flex-start` → শুরু থেকে
+- `flex-end` → শেষে
+- `center` → মাঝখানে
+- `space-between` → মাঝে সমান gap
+- `space-around` → চারপাশে সমান gap
+
+---
+
+### 3. alignItems
+
+👉 ক্রস (Cross Axis) বরাবর children কিভাবে সাজানো হবে।
+
+- `flex-start` → উপরে/বামে
+- `flex-end` → নিচে/ডানে
+- `center` → মাঝখানে
+- `stretch` → available জায়গা জুড়ে
+
+---
+
+### 4. flex
+
+👉 কোন child **কতটা জায়গা নেবে** সেটা নির্ধারণ করে।
+
+- `flex: 1` → available জায়গা সমানভাবে নেবে।
+- `flex: 2` → অন্য child এর দ্বিগুণ জায়গা নেবে।
+
+---
+
+✅ Flexbox ব্যবহার = Responsive Layout সহজে বানানো যায়।
+
+---
+
+## 🔹 Dimensions API
+
+👉 ডিভাইসের **screen size** (height, width) জানতে ব্যবহৃত হয়।
+
+```tsx
+import { Dimensions } from 'react-native'
+
+const { width, height } = Dimensions.get('window')
+
+console.log(width, height)
+```
+
+- `window` → অ্যাপের পুরো window এর সাইজ
+- `screen` → পুরো screen এর সাইজ (status bar সহ)
+
+---
+
+## 🔹 Platform API
+
+👉 কোন ডিভাইসে (Android / iOS) কোড চলছে সেটা চেক করতে ব্যবহার হয়।
+
+```tsx
+import { Platform } from 'react-native'
+
+if (Platform.OS === 'ios') {
+  console.log('Running on iOS')
+} else {
+  console.log('Running on Android')
+}
+```
+
+- `Platform.OS` → `"ios"` / `"android"`
+- `Platform.Version` → OS এর version নম্বর
+
+---
+
+## 📝 Summary (Exam-Ready Note)
+
+- **flexDirection** → row / column
+- **justifyContent** → main axis এ position
+- **alignItems** → cross axis এ position
+- **flex** → space ভাগ করা
+- **Dimensions** → screen width & height
+- **Platform API** → device অনুযায়ী কোড চালানো
+
+---
