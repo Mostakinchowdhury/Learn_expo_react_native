@@ -397,3 +397,620 @@ if (Platform.OS === 'ios') {
 - **Platform API** → device অনুযায়ী কোড চালানো
 
 ---
+
+# **Day 4: TextInput, Button, Pressable, TouchableOpacity, KeyboardAvoidingView**
+
+
+## 1️⃣ **TextInput**
+
+👉 ইউজারের কাছ থেকে **input নেওয়ার জন্য** ব্যবহার হয়।
+
+🔹 **কখন ব্যবহার করবেন?**
+
+* লগইন ফর্ম (username, password)
+* সার্চ বক্স
+* কমেন্ট/ফিডব্যাক ফিল্ড
+
+🔹 **Props (গুরুত্বপূর্ণ):**
+
+* `placeholder` → hint টেক্সট দেখায়
+* `value` → state এর ভ্যালু দেখায়
+* `onChangeText` → যখন user টাইপ করে তখন ফাংশন চালায়
+* `secureTextEntry` → পাসওয়ার্ড ফিল্ডের জন্য
+
+🔹 **Example:**
+
+```jsx
+import { TextInput } from "react-native";
+import { useState } from "react";
+
+export default function App() {
+  const [text, setText] = useState("");
+
+  return (
+    <TextInput
+      style={{ borderWidth: 1, padding: 10, margin: 10 }}
+      placeholder="Enter your name"
+      value={text}
+      onChangeText={setText}
+    />
+  );
+}
+```
+
+---
+
+## 2️⃣ **Button**
+
+👉 সহজ একটা **pressable button** বানানোর জন্য ব্যবহার হয়।
+
+🔹 **কখন ব্যবহার করবেন?**
+
+* খুবই বেসিক button দরকার হলে (customization দরকার নেই)
+* দ্রুত test/demo এর জন্য
+
+🔹 **Props (গুরুত্বপূর্ণ):**
+
+* `title` → বাটনের ভেতরে টেক্সট
+* `onPress` → যখন চাপা হবে তখন কী করবে
+
+🔹 **Example:**
+
+```jsx
+import { Button, View } from "react-native";
+
+export default function App() {
+  return (
+    <View>
+      <Button
+        title="Click Me"
+        onPress={() => alert("Button Pressed")}
+      />
+    </View>
+  );
+}
+```
+
+⚠️ Limitation → Button খুব rigid, style করা যায় না। এজন্য `TouchableOpacity` বা `Pressable` বেশি ব্যবহার হয়।
+
+---
+
+## 3️⃣ **TouchableOpacity**
+
+👉 Button এর alternative। **Custom style, animation, opacity effect** সহকারে বাটন বানাতে কাজে লাগে।
+
+🔹 **কখন ব্যবহার করবেন?**
+
+* Custom design button বানাতে
+* Icon + Text একসাথে button করতে
+* Press করলে opacity কমে যাবে → user বুঝবে যে press হয়েছে
+
+🔹 **Props (গুরুত্বপূর্ণ):**
+
+* `onPress` → বাটন চাপলে কাজ করবে
+* `activeOpacity` → কতটা fade হবে (default: 0.2)
+
+🔹 **Example:**
+
+```jsx
+import { TouchableOpacity, Text } from "react-native";
+
+export default function App() {
+  return (
+    <TouchableOpacity
+      style={{
+        backgroundColor: "blue",
+        padding: 10,
+        margin: 10,
+        borderRadius: 8
+      }}
+      onPress={() => alert("TouchableOpacity Pressed")}
+      activeOpacity={0.6}
+    >
+      <Text style={{ color: "white" }}>Custom Button</Text>
+    </TouchableOpacity>
+  );
+}
+```
+
+---
+
+## 4️⃣ **Pressable**
+
+👉 TouchableOpacity এর মতো কিন্তু **আরও advanced**।
+Pressable → আপনাকে **press এর state (hover, pressed, long press)** control করতে দেয়।
+
+🔹 **কখন ব্যবহার করবেন?**
+
+* যখন button এর বিভিন্ন state অনুযায়ী style দিতে চান (press করলে color বদলাবে)
+* long press event handle করতে হলে
+
+🔹 **Props (গুরুত্বপূর্ণ):**
+
+* `onPress` → normal press
+* `onLongPress` → লম্বা press
+* `style={({ pressed }) => ...}` → press হলে style পরিবর্তন করা যাবে
+
+🔹 **Example:**
+
+```jsx
+import { Pressable, Text } from "react-native";
+
+export default function App() {
+  return (
+    <Pressable
+      onPress={() => alert("Pressed!")}
+      onLongPress={() => alert("Long Pressed!")}
+      style={({ pressed }) => [
+        {
+          backgroundColor: pressed ? "lightblue" : "skyblue",
+          padding: 10,
+          margin: 10,
+          borderRadius: 8
+        }
+      ]}
+    >
+      <Text>Pressable Button</Text>
+    </Pressable>
+  );
+}
+```
+
+---
+
+## 5️⃣ **KeyboardAvoidingView**
+
+👉 যখন **TextInput এ টাইপ করার সময় keyboard উঠবে**, তখন input field ঢেকে ফেলে।
+এই সমস্যা এড়াতে KeyboardAvoidingView ব্যবহার হয়।
+
+🔹 **কখন ব্যবহার করবেন?**
+
+* ফর্ম বা চ্যাট অ্যাপ বানানোর সময় (যাতে keyboard টেক্সট ঢেকে না ফেলে)
+
+🔹 **Props (গুরুত্বপূর্ণ):**
+
+* `behavior="padding"` → keyboard উঠলে উপরের দিকে প্যাড করে
+* `behavior="height"` → layout এর height adjust করে
+* `keyboardVerticalOffset` → কতটুকু offset করবে
+
+🔹 **Example:**
+
+```tsx
+import { KeyboardAvoidingView, TextInput, Platform } from "react-native";
+
+export default function App() {
+  return (
+    <KeyboardAvoidingView
+      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={50}
+    >
+      <TextInput
+        style={{ borderWidth: 1, padding: 10, width: 200 }}
+        placeholder="Type something..."
+      />
+    </KeyboardAvoidingView>
+  );
+}
+```
+
+---
+
+# ✅ Quick Recap (কোনটা কখন ব্যবহার করবেন)
+
+* **TextInput** → User থেকে data input নিতে
+* **Button** → Simple button দরকার হলে (কাস্টম style দরকার না হলে)
+* **TouchableOpacity** → Stylish button + opacity effect
+* **Pressable** → Advanced button (state-based style, long press, hover)
+* **KeyboardAvoidingView** → Input field যেন keyboard এ ঢাকা না পড়ে
+
+---
+
+
+# **Day 5: FlatList, SectionList, VirtualizedList, KeyExtractor, renderItem, performance optimization**
+
+## 1️⃣ **FlatList**
+
+👉 লম্বা ডেটার লিস্ট **efficiently render** করার জন্য ব্যবহৃত হয়।
+সাধারণ map loop করলে performance কমে যায়। FlatList শুধু screen এ visible item গুলো render করে → performance অনেক ভালো হয়।
+
+🔹 **কখন ব্যবহার করবেন?**
+
+* Data list → যেমন products, users, chat messages
+* যখন অনেক বড় array render করতে হবে
+
+🔹 **Props (গুরুত্বপূর্ণ):**
+
+* `data` → কোন array render হবে
+* `renderItem` → প্রতিটি item কীভাবে দেখাবে
+* `keyExtractor` → প্রতিটি item এর unique key
+* `horizontal` → horizontal list render করবে
+* `numColumns` → grid বানাতে
+
+🔹 **Example:**
+
+```jsx
+import { FlatList, Text, View } from "react-native";
+
+const DATA = [{ id: "1", name: "Apple" }, { id: "2", name: "Banana" }];
+
+export default function App() {
+  return (
+    <FlatList
+      data={DATA}
+      renderItem={({ item }) => (
+        <View style={{ padding: 10 }}>
+          <Text>{item.name}</Text>
+        </View>
+      )}
+      keyExtractor={(item) => item.id}
+    />
+  );
+}
+```
+
+---
+
+## 2️⃣ **SectionList**
+
+👉 Data কে **section/group আকারে render** করতে কাজে লাগে।
+যেমন: Contacts app → (A, B, C অনুযায়ী আলাদা section)।
+
+🔹 **কখন ব্যবহার করবেন?**
+
+* যখন data কে group করে দেখাতে হবে
+* Example: Grocery list (Fruits, Vegetables), Contacts list
+
+🔹 **Props (গুরুত্বপূর্ণ):**
+
+* `sections` → array of sections (প্রতিটি section এ title + data থাকে)
+* `renderItem` → প্রতিটি item render করবে
+* `renderSectionHeader` → প্রতিটি section এর header render করবে
+* `keyExtractor`
+
+🔹 **Example:**
+
+```jsx
+import { SectionList, Text, View } from "react-native";
+
+const DATA = [
+  { title: "Fruits", data: ["Apple", "Banana"] },
+  { title: "Vegetables", data: ["Carrot", "Potato"] },
+];
+
+export default function App() {
+  return (
+    <SectionList
+      sections={DATA}
+      renderItem={({ item }) => <Text>{item}</Text>}
+      renderSectionHeader={({ section }) => (
+        <Text style={{ fontWeight: "bold" }}>{section.title}</Text>
+      )}
+      keyExtractor={(item, index) => item + index}
+    />
+  );
+}
+```
+
+---
+
+## 3️⃣ **VirtualizedList**
+
+👉 FlatList & SectionList actually VirtualizedList এর উপর তৈরি।
+এটা **base component** যেটা দিয়ে আপনি নিজের custom list বানাতে পারেন।
+
+🔹 **কখন ব্যবহার করবেন?**
+
+* যখন একদম custom control দরকার হয়
+* খুব advanced scenario তে (FlatList / SectionList enough না হলে)
+
+🔹 **Props (গুরুত্বপূর্ণ):**
+
+* `data` → আপনার dataset
+* `getItem` → index থেকে item return করবে
+* `getItemCount` → total item সংখ্যা return করবে
+* `renderItem`
+* `keyExtractor`
+
+🔹 **Example:**
+
+```jsx
+import { VirtualizedList, Text } from "react-native";
+
+const DATA = Array.from({ length: 100 }).map((_, i) => `Item ${i}`);
+
+export default function App() {
+  const getItem = (data, index) => ({ id: index.toString(), title: data[index] });
+  const getItemCount = (data) => data.length;
+
+  return (
+    <VirtualizedList
+      data={DATA}
+      initialNumToRender={10}
+      renderItem={({ item }) => <Text>{item.title}</Text>}
+      keyExtractor={(item) => item.id}
+      getItem={getItem}
+      getItemCount={getItemCount}
+    />
+  );
+}
+```
+
+---
+
+## 4️⃣ **KeyExtractor**
+
+👉 প্রতিটি item কে **unique key** দেয়।
+React Native performance optimization এর জন্য **unique key** খুবই গুরুত্বপূর্ণ।
+
+🔹 **কখন ব্যবহার করবেন?**
+
+* সবসময় যখন FlatList/SectionList ব্যবহার করবেন
+
+🔹 **Best Practice:**
+
+* unique id থাকলে সেটা ব্যবহার করুন → `item.id`
+* id না থাকলে `index` ব্যবহার করতে পারেন (কিন্তু avoid করাই ভালো)
+
+```jsx
+keyExtractor={(item) => item.id}
+```
+
+---
+
+## 5️⃣ **renderItem**
+
+👉 প্রতিটি item render করার জন্য function।
+
+```jsx
+renderItem={({ item }) => (
+  <Text>{item.name}</Text>
+)}
+```
+
+⚠️ **Tips:** renderItem function এর ভিতরে বেশি কাজ করলে performance কমে যাবে।
+তাই separate component বানিয়ে দিন।
+
+---
+
+## 6️⃣ **Performance Optimization**
+
+বড় dataset এর ক্ষেত্রে performance optimize করা খুব জরুরি।
+
+🔹 **Tips:**
+
+1. **keyExtractor এ unique key ব্যবহার করুন** → Re-render কম হবে
+2. **initialNumToRender** → শুরুতে কত item render হবে সেট করুন
+3. **maxToRenderPerBatch** → প্রতি ব্যাচে কত item render হবে
+4. **windowSize** → visible এর আশেপাশে কত item render হবে
+5. **removeClippedSubviews** → screen এর বাইরে থাকা item unload হবে
+6. **memoization ব্যবহার করুন** → item component `React.memo` দিয়ে wrap করুন
+7. **getItemLayout** → যদি item height/fixed size জানা থাকে → scroll performance অনেক বাড়ে
+
+---
+
+# ✅ Quick Recap (কোনটা কখন ব্যবহার করবেন)
+
+* **FlatList** → Simple & efficient list (সবচেয়ে বেশি ব্যবহার হয়)
+* **SectionList** → Grouped/Section-wise data list
+* **VirtualizedList** → Base list component (FlatList/SectionList এর নিচের লেভেল)
+* **KeyExtractor** → প্রতিটি item কে unique id দেওয়া (performance এর জন্য জরুরি)
+* **renderItem** → প্রতিটি item কীভাবে দেখাবে
+* **Performance Optimization** → বড় dataset এর জন্য অবশ্যই apply করতে হবে
+
+---
+
+
+
+# **Day 6: Expo Assets (Image, Fonts, Icons লোড করা), Local images বনাম Remote images, File input, Video, Audio**
+---
+
+## 1️⃣ **Expo Assets (Image, Fonts, Icons)**
+
+### 🔹 **Image**
+
+React Native এ `Image` component ব্যবহার করে local বা remote image লোড করা যায়।
+
+```jsx
+import { Image } from "react-native";
+
+// Local image
+<Image source={require("./assets/logo.png")} style={{ width: 100, height: 100 }} />
+
+// Remote image
+<Image source={{ uri: "https://picsum.photos/200" }} style={{ width: 100, height: 100 }} />
+```
+
+👉 **কখন কোনটা ব্যবহার করবেন?**
+
+* Local image → App এর ভেতরে default ছবি/লোগো (offline always available)
+* Remote image → API থেকে আসা ছবি বা ওয়েবে hosted image
+
+---
+
+### 🔹 **Fonts (Expo Font)**
+
+Custom fonts use করতে হলে **expo-font** ব্যবহার হয়।
+
+```bash
+expo install expo-font
+```
+
+```jsx
+import * as Font from "expo-font";
+import { useFonts } from "expo-font";
+import { Text } from "react-native";
+
+export default function App() {
+  const [fontsLoaded] = useFonts({
+    Poppins: require("./assets/fonts/Poppins-Regular.ttf"),
+  });
+
+  if (!fontsLoaded) return null;
+
+  return <Text style={{ fontFamily: "Poppins", fontSize: 20 }}>Hello Fonts!</Text>;
+}
+```
+
+👉 **কেন fonts ব্যবহার করবেন?** → App design কে unique করতে।
+
+---
+
+### 🔹 **Icons (Expo Vector Icons)**
+
+Expo project এ by default আসে → `@expo/vector-icons`
+
+```jsx
+import { Ionicons } from "@expo/vector-icons";
+import { View } from "react-native";
+
+export default function App() {
+  return (
+    <View>
+      <Ionicons name="home" size={32} color="blue" />
+    </View>
+  );
+}
+```
+
+👉 **কেন icons ব্যবহার করবেন?** → UI কে আরও professional ও user-friendly করতে।
+
+---
+
+## 2️⃣ **Local Images বনাম Remote Images**
+
+| Feature      | Local Images                         | Remote Images                       |
+| ------------ | ------------------------------------ | ----------------------------------- |
+| Source       | `require("./assets/pic.png")`        | `{ uri: "https://..." }`            |
+| Availability | Offline সবসময় থাকবে                  | Internet দরকার                      |
+| Performance  | Fast (app এর ভেতরে bundle হয়)        | Load হতে সময় নেয় (network delay)    |
+| Use Case     | Logos, default assets, static images | User profile pics, API থেকে আসা ছবি |
+
+👉 **Best Practice:**
+
+* App UI এর জন্য → Local images
+* Dynamic content (API থেকে) → Remote images
+
+---
+
+## 3️⃣ **File Input (Document/Image Picker)**
+
+React Native এ web এর মতো `<input type="file">` নাই।
+এর জন্য **expo-image-picker** ব্যবহার করতে হয়।
+
+```bash
+expo install expo-image-picker
+```
+
+```jsx
+import * as ImagePicker from "expo-image-picker";
+import { Button, Image } from "react-native";
+import { useState } from "react";
+
+export default function App() {
+  const [image, setImage] = useState(null);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  return (
+    <>
+      <Button title="Pick an Image" onPress={pickImage} />
+      {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+    </>
+  );
+}
+```
+
+👉 **কেন দরকার?**
+
+* Profile picture upload
+* File sharing apps
+* Document upload feature
+
+---
+
+## 4️⃣ **Video Handling**
+
+Expo তে video play করার জন্য → **expo-av** ব্যবহার হয়।
+
+```bash
+expo install expo-av
+```
+
+```jsx
+import { Video } from "expo-av";
+import { View } from "react-native";
+
+export default function App() {
+  return (
+    <View>
+      <Video
+        source={{ uri: "https://www.w3schools.com/html/mov_bbb.mp4" }}
+        style={{ width: 300, height: 200 }}
+        useNativeControls
+        resizeMode="contain"
+        isLooping
+      />
+    </View>
+  );
+}
+```
+
+👉 **কেন দরকার?**
+
+* Media apps (YouTube clone, Netflix clone)
+* Course apps (ভিডিও প্লে করতে)
+
+---
+
+## 5️⃣ **Audio Handling**
+
+Expo তে audio play করার জন্যও **expo-av** ব্যবহার হয়।
+
+```jsx
+import { Audio } from "expo-av";
+import { Button } from "react-native";
+import { useState } from "react";
+
+export default function App() {
+  const [sound, setSound] = useState();
+
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(
+      require("./assets/sound.mp3")
+    );
+    setSound(sound);
+    await sound.playAsync();
+  }
+
+  return <Button title="Play Sound" onPress={playSound} />;
+}
+```
+
+👉 **কেন দরকার?**
+
+* Music player apps
+* Notification sound
+* Meditation apps
+
+---
+
+# ✅ Quick Recap (কোনটা কখন ব্যবহার করবেন)
+
+* **Image** → Local (logo, static asset), Remote (API content)
+* **Fonts** → Custom design, branding
+* **Icons** → App navigation & buttons এ use করা
+* **File Input (Image Picker)** → Profile upload, file sharing
+* **Video** → Course app, media app
+* **Audio** → Music app, alert sound
+
+---
